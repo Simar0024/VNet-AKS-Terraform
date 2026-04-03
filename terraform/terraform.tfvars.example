@@ -1,0 +1,138 @@
+# Terraform Variables - Example Configuration
+# Copy this file to terraform.tfvars and update values as needed
+
+# ============================================================================
+# AZURE SUBSCRIPTION & PROJECT
+# ============================================================================
+
+# Get your subscription ID: az account list --query "[].id"
+azure_subscription_id = "00000000-0000-0000-0000-000000000000"
+
+environment = "prod"
+project_name = "webappaks"
+location = "eastus"
+
+# ============================================================================
+# NETWORK CONFIGURATION
+# ============================================================================
+
+vnet_cidr             = "10.0.0.0/16"
+public_subnet_cidr    = "10.0.1.0/24"
+private_subnet_cidr   = "10.0.2.0/24"
+enable_nat_gateway    = true
+nat_gateway_idle_timeout = 4
+
+# ============================================================================
+# AKS CLUSTER CONFIGURATION
+# ============================================================================
+
+aks_cluster_name             = "aks-app"
+kubernetes_version           = "1.27"
+aks_node_count               = 3
+aks_node_size                = "Standard_B2s"
+aks_max_pods_per_node        = 110
+aks_enable_auto_scaling      = true
+aks_min_node_count           = 2
+aks_max_node_count           = 10
+aks_network_plugin           = "azure"
+aks_network_policy           = "azure"
+aks_enable_rbac              = true
+aks_enable_private_cluster   = true
+aks_enable_http_application_routing = false
+aks_sku_tier                 = "Free"
+
+# ============================================================================
+# APPLICATION GATEWAY & WAF
+# ============================================================================
+
+app_gateway_name   = "appgw-app"
+app_gateway_sku    = "Standard_v2"
+app_gateway_capacity = 2
+waf_enabled        = true
+waf_mode           = "Prevention"
+app_gateway_sku_name = "WAF_v2"
+
+# SSL Certificate Password (IMPORTANT: Change in production!)
+ssl_certificate_password = "TempPassword123!"
+
+# ============================================================================
+# DATABASE CONFIGURATION
+# ============================================================================
+
+sql_server_name      = "sql-app-server"
+sql_version          = "14"  # 14 for PostgreSQL, 12 for MySQL
+sql_admin_username   = "sqladmin"
+sql_admin_password   = "P@ssw0rd1234!"  # IMPORTANT: Use strong password!
+sql_database_name    = "appdb"
+sql_sku              = "B_Standard_B2s"  # Burstable tier
+sql_storage_mb       = 32768  # 32GB
+sql_backup_retention_days = 7
+
+# ============================================================================
+# STORAGE ACCOUNT
+# ============================================================================
+
+storage_account_name         = "stappakslogs"  # Must be globally unique!
+storage_account_tier         = "Standard"
+storage_account_replication  = "GRS"  # Geo-redundant for durability
+storage_account_access_tier  = "Hot"
+
+# ============================================================================
+# REDIS CACHE
+# ============================================================================
+
+redis_cache_name            = "redis-app-cache"
+redis_capacity              = 1  # 0=250MB, 1=1GB, 2=2.5GB, etc.
+redis_family                = "C"  # C for Standard
+redis_sku_name              = "Standard"
+redis_enable_non_ssl_port   = false  # Enforce SSL only
+redis_minimum_tls_version   = "1.2"
+
+# ============================================================================
+# PRIVATE VM / BASTION
+# ============================================================================
+
+bastion_vm_name  = "vm-bastion"
+bastion_vm_size  = "Standard_B2s"
+bastion_os_type  = "Windows"
+bastion_image_publisher = "MicrosoftWindowsServer"
+bastion_image_offer = "WindowsServer"
+bastion_image_sku = "2022-datacenter"
+bastion_image_version = "latest"
+admin_username = "azureadmin"
+admin_password = "BastionP@ssw0rd123!"  # IMPORTANT: Use strong password!
+
+# ============================================================================
+# AZURE BASTION
+# ============================================================================
+
+bastion_service_name = "bastion-app"
+bastion_sku = "Standard"
+
+# ============================================================================
+# INTERNAL LOAD BALANCER
+# ============================================================================
+
+internal_lb_name  = "ilb-app-gateway"
+internal_lb_sku   = "Standard"
+
+# ============================================================================
+# MONITORING & LOGGING
+# ============================================================================
+
+enable_diagnostics   = true
+log_retention_days   = 30
+
+# ============================================================================
+# TAGS
+# ============================================================================
+
+tags = {
+  ManagedBy       = "Terraform"
+  Project         = "Web Application AKS"
+  Environment     = "production"
+  CostCenter      = "engineering"
+  BackupRequired  = "true"
+  DataClassification = "internal"
+}
+
