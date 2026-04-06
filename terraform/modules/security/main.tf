@@ -56,10 +56,17 @@ resource "azurerm_key_vault" "main" {
   network_acls {
     default_action             = "Deny"
     bypass                     = "AzureServices"
+    ip_rules                   = [data.http.my_public_ip.response_body]
     virtual_network_subnet_ids = [var.private_subnet_id]
   }
 
   tags = var.tags
+}
+
+resource "azurerm_role_assignment" "terraform_vault_admin" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Crypto Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 # ============================================================================
@@ -82,7 +89,8 @@ resource "azurerm_key_vault_key" "storage" {
   ]
 
   depends_on = [
-    azurerm_key_vault.main
+    azurerm_key_vault.main,
+    azurerm_role_assignment.terraform_vault_admin
   ]
 }
 
@@ -99,6 +107,11 @@ resource "azurerm_key_vault_key" "disk_encryption" {
     "unwrapKey",
     "verify",
     "wrapKey"
+  ]
+
+  depends_on = [
+    azurerm_key_vault.main,
+    azurerm_role_assignment.terraform_vault_admin
   ]
 }
 
@@ -154,3 +167,6 @@ resource "azurerm_role_assignment" "disk_encryption_key_vault" {
 # ============================================================================
 
 data "azurerm_client_config" "current" {}
+data "http" "my_public_ip" {
+  url = "https://ifconfig.me/ip"
+}

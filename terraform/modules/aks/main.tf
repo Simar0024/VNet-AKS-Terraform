@@ -31,11 +31,11 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   network_profile {
-    network_plugin     = "azure"
-    network_policy     = "azure"
-    service_cidr       = var.service_cidr
-    dns_service_ip     = var.dns_service_ip
-    load_balancer_sku  = "standard"
+    network_plugin    = "azure"
+    network_policy    = "azure"
+    service_cidr      = var.service_cidr
+    dns_service_ip    = var.dns_service_ip
+    load_balancer_sku = "standard"
   }
 
   http_application_routing_enabled = false

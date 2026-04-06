@@ -158,7 +158,7 @@ terraform output -json > deployment_outputs.json
 ```bash
 # Get kubeconfig file
 az aks get-credentials \
-  --resource-group "rg-webappaks-prod-eastus" \
+  --resource-group "rg-webappaks-dev-centralindia" \
   --name "aks-app-prod" \
   --admin
 

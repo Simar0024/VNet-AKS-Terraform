@@ -30,12 +30,13 @@ variable "environment" {
   }
 }
 
-variable "bastion_subnet_id" {
+variable "bastion_service_subnet_id" {
   description = "ID of the subnet for Azure Bastion Service"
   type        = string
+  default     = "AzureBastionSubnet" # This is the required name for the subnet used by Azure Bastion
 
   validation {
-    condition     = can(regex("^/subscriptions/", var.bastion_subnet_id))
+    condition     = can(regex("^/subscriptions/", var.bastion_service_subnet_id))
     error_message = "Subnet ID must be a valid Azure resource ID."
   }
 }
@@ -160,4 +161,9 @@ variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+variable "management_subnet_id" {
+  type        = string
+  description = "ID for the VM's Network Interface"
 }

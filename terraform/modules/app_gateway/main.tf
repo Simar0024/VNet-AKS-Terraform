@@ -168,7 +168,7 @@ resource "azurerm_application_gateway" "main" {
   # SSL Certificate
   ssl_certificate {
     name     = "appgw-ssl-cert"
-    data     = var.ssl_certificate_data
+    data     = filebase64("${path.module}/certificates/appgw.pfx")
     password = var.ssl_certificate_password
   }
 

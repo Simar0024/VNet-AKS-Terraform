@@ -2,12 +2,13 @@
 variable "azure_subscription_id" {
   description = "Azure Subscription ID"
   type        = string
+  sensitive   = true
 }
 
 variable "environment" {
   description = "Environment name (dev, staging, prod)"
   type        = string
-  default     = "prod"
+  default     = "dev"
 
   validation {
     condition     = contains(["dev", "staging", "prod"], var.environment)
@@ -24,16 +25,16 @@ variable "project_name" {
 variable "resource_group_name" {
   description = "Name of the resource group"
   type        = string
-  default     = "rg-webappaks-prod-eastus"
+  default     = "rg-vnet-aks-app"
 }
 
 variable "location" {
   description = "Azure region for resources"
   type        = string
-  default     = "eastus"
+  default     = "centralindia"
 
   validation {
-    condition     = contains(["eastus", "westus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"], var.location)
+    condition     = contains(["centralindia", "eastus", "westus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"], var.location)
     error_message = "Unsupported location. Use: eastus, westus, eastus2, westus2, centralus, northeurope, westeurope"
   }
 }
@@ -236,13 +237,13 @@ variable "app_gateway_sku_name" {
 variable "sql_server_name" {
   description = "Name of SQL Flexible Server"
   type        = string
-  default     = "sql-app-server"
+  default     = "psql-app-server"
 }
 
 variable "sql_version" {
   description = "SQL Server version (12 for MySQL, 13-14 for PostgreSQL)"
   type        = string
-  default     = "14"
+  default     = "16"
 }
 
 variable "sql_admin_username" {
@@ -272,7 +273,7 @@ variable "sql_sku" {
 variable "sql_storage_mb" {
   description = "Storage size in MB for SQL Database"
   type        = number
-  default     = 32768 # 32GB
+  default     = 32768
 }
 
 variable "sql_backup_retention_days" {
@@ -293,7 +294,7 @@ variable "sql_backup_retention_days" {
 variable "storage_account_name" {
   description = "Name of Storage Account (must be globally unique, lowercase)"
   type        = string
-  default     = "stappakslogs"
+  default     = "vnetaksapplogs01"
 }
 
 variable "storage_account_tier" {
@@ -378,7 +379,7 @@ variable "bastion_vm_size" {
 variable "bastion_os_type" {
   description = "Operating system for Bastion VM (Windows or Linux)"
   type        = string
-  default     = "Windows"
+  default     = "Linux"
 
   validation {
     condition     = contains(["Windows", "Linux"], var.bastion_os_type)
@@ -389,19 +390,19 @@ variable "bastion_os_type" {
 variable "bastion_image_publisher" {
   description = "Image publisher for Bastion VM"
   type        = string
-  default     = "MicrosoftWindowsServer"
+  default     = "Canonical"
 }
 
 variable "bastion_image_offer" {
   description = "Image offer for Bastion VM"
   type        = string
-  default     = "WindowsServer"
+  default     = "UbuntuServer"
 }
 
 variable "bastion_image_sku" {
   description = "Image SKU for Bastion VM"
   type        = string
-  default     = "2022-datacenter"
+  default     = "18.04-LTS"
 }
 
 variable "bastion_image_version" {
@@ -505,7 +506,6 @@ variable "ssl_certificate_password" {
   description = "Password for SSL certificate (pfx format)"
   type        = string
   sensitive   = true
-  default     = "TempPassword123!"
 }
 
 # ============================================================================
@@ -526,7 +526,7 @@ variable "log_analytics_sku" {
 variable "alert_email" {
   description = "Email address for alert notifications"
   type        = string
-  default     = "admin@example.com"
+  default     = "simar022netsmartz@gmail.com"
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", var.alert_email))
@@ -587,7 +587,7 @@ variable "enable_versioning" {
 variable "database_server_name" {
   description = "Database server name"
   type        = string
-  default     = "postgres-webappaks-prod"
+  default     = "psql-app-server"
 }
 
 variable "database_name" {
@@ -599,20 +599,20 @@ variable "database_name" {
 variable "database_admin_user" {
   description = "Database admin username"
   type        = string
-  default     = "dbadmin"
+  default     = "psqladmin"
 }
 
 variable "database_admin_password" {
   description = "Database admin password"
   type        = string
   sensitive   = true
-  default     = "SecurePassword123!"
+  default     = "PsqlAdminP@ssw0rd123!"
 }
 
 variable "database_version" {
   description = "PostgreSQL version"
   type        = string
-  default     = "14"
+  default     = "16"
 }
 
 variable "database_sku_name" {
@@ -836,7 +836,7 @@ variable "bastion_admin_ssh_key" {
   description = "Bastion admin SSH public key"
   type        = string
   sensitive   = true
-  default     = ""
+  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzLZZUOuUbUUVDh/mrnSGlUkOOYgmjistO7re+FYicFKPqYPMOJEArJ/C/ON8LGIqK0wL6pos+aXZNKTDmitUnrP9o0lTpneXVjseje8sTidEYCNz31LX+4QrLTLOrbXr96zSoOWn30chgSfNqkQ09+HkVYk4w2CtR5/5bX7zcUtU5qkoonFh448rJC4u4oD87uLZTDH/hMZBLtuWqrmKNXAVKpjr6iR4Yk4wiwZhFSJARG5v5sQb2JwSEzIb1PL8Tnh9t7CAHvsChpkhHuEs6QRJE/dUfpaZBnkFIpMk+HDOpEDCTc8SISL0CG1YNXabA0s/7zSgMUTylQGzMhOFa+nsdJsT0djNPZ/wG8wma57rOEUmGQPiA9/4ImRrmEp4FfQd2KYdgssYEg37bvCda/gC5u5bDn+4rEsuT9OuEkuqMi8WSdiVn/wVfsPM4WrJ21NN9GwSYIQAmkcGIxxVea/HwLSHVyPP08UIz8cRHdTKvXMpUAiwwa4i3vMl93yO5mK8yPeZzjkTgTanaFTazVRVVArsGvCMGlaNA7G9roIeDXcUzTFl8zYLsW0OFIgwmzRoe7wb02O4kPdY8GNNa4ZL2hfZ8uyXq0+XfxUeKc4v06Sx8oTK9nnv93k3VPHlVmmW92v9WrXvDnN7uKDaNgmlXwo+sIlytAhDaHNA51Q== simarjit@NTZ-LINUX-002"
 }
 
 variable "enable_vm_encryption" {

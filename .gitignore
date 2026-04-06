@@ -69,7 +69,11 @@ cloud-init.yaml
 *.pfx
 *.crt
 *.cer
-certs/
+*id_rsa
+*id_rsa.pub
+id_rsa_bastion
+id_rsa_bastion.pub
+certificates/
 
 # Backup files
 *.backup

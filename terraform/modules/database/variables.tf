@@ -74,11 +74,11 @@ variable "database_admin_password" {
 variable "database_version" {
   description = "PostgreSQL version"
   type        = string
-  default     = "14"
+  default     = "16"
 
   validation {
     condition     = contains(["11", "12", "13", "14", "15", "16"], var.database_version)
-    error_message = "PostgreSQL version must be 11, 12, 13, 14, 15, or 16."
+    error_message = "PostgreSQL version must be 11, 12, 13, 14, 15, 16."
   }
 }
 

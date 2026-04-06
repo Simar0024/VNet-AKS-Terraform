@@ -59,3 +59,18 @@ output "network_watcher_name" {
   description = "Name of the Network Watcher"
   value       = azurerm_network_watcher.main.name
 }
+
+output "bastion_subnet_id" {
+  description = "The ID of the AzureBastionSubnet"
+  value       = azurerm_subnet.bastion_service.id
+}
+
+output "management_subnet_id" {
+  description = "The ID of the subnet for the Private VM"
+  value       = azurerm_subnet.management.id
+}
+
+output "database_subnet_id" {
+  description = "The ID of the delegated Database subnet"
+  value       = azurerm_subnet.database.id
+}

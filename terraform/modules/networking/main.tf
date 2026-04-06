@@ -43,7 +43,7 @@ resource "azurerm_subnet" "private" {
   address_prefixes     = [var.private_subnet_cidr]
 
   private_endpoint_network_policies = "Disabled"
-
+  service_endpoints                 = ["Microsoft.KeyVault", "Microsoft.Storage", "Microsoft.Sql"]
   delegation {
     name = "AzureDatabases"
 
@@ -56,6 +56,35 @@ resource "azurerm_subnet" "private" {
   }
 }
 
+resource "azurerm_subnet" "bastion_service" {
+  name                 = "AzureBastionSubnet" # MUST be exactly this
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.10.0/26"] # Use a small range like /26
+}
+
+resource "azurerm_subnet" "management" {
+  name                 = "snet-mgmt-dev"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.20.0/24"]
+  # No delegation here! This allows NICs and VMs to exist.
+}
+
+resource "azurerm_subnet" "database" {
+  name                 = "snet-db-dev"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.30.0/24"]
+
+  delegation {
+    name = "fs-delegation"
+    service_delegation {
+      name    = "Microsoft.DBforMySQL/flexibleServers"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}
 # ============================================================================
 # PUBLIC NETWORK SECURITY GROUP
 # ============================================================================

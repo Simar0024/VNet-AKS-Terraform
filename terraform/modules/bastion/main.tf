@@ -23,12 +23,13 @@ resource "azurerm_bastion_host" "main" {
   name                = "bastion-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name
+  sku                = "Standard"
   ip_connect_enabled  = true
   tunneling_enabled   = true
 
   ip_configuration {
     name                 = "bastion-ipconfig"
-    subnet_id            = var.bastion_subnet_id
+    subnet_id            = var.bastion_service_subnet_id
     public_ip_address_id = azurerm_public_ip.bastion.id
   }
 
@@ -110,13 +111,12 @@ resource "azurerm_network_interface" "bastion_vm" {
 
   ip_configuration {
     name                          = "testconfiguration1"
-    subnet_id                     = var.private_subnet_id
+    subnet_id                     = var.management_subnet_id
     private_ip_address_allocation = "Dynamic"
   }
 
   tags = var.tags
 }
-
 # ============================================================================
 # BASTION JUMP/ADMIN VM
 # ============================================================================
@@ -143,11 +143,11 @@ resource "azurerm_linux_virtual_machine" "bastion_vm" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18_04-lts-gen2"
-    version   = "latest"
-  }
+  publisher = "Canonical"
+  offer     = "0001-com-ubuntu-server-jammy"
+  sku       = "22_04-lts-gen2"
+  version   = "latest"
+}
 
   identity {
     type         = "UserAssigned"
