@@ -75,7 +75,6 @@ resource "azurerm_application_gateway" "main" {
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
-    capacity = 2
   }
    # Autoscaling
   autoscale_configuration {
@@ -171,11 +170,11 @@ resource "azurerm_application_gateway" "main" {
   }
 
   # SSL Certificate
-  ssl_certificate {
-    name     = "appgw-ssl-cert"
-    data     = filebase64("${path.module}/certificates/appgw.pfx")
-    password = var.ssl_certificate_password
-  }
+ ssl_certificate {
+  name     = "appgw-ssl-cert"
+  data     = filebase64("${path.module}/certificates/appgw.pfx")
+  password = var.ssl_certificate_password
+}
 
   # WAF Policy
   waf_configuration {

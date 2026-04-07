@@ -53,7 +53,7 @@ variable "dns_prefix" {
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.28"
+  default     = "1.30"
 
   validation {
     condition     = can(regex("^1\\.[0-9]{2}$", var.kubernetes_version))
@@ -119,7 +119,7 @@ variable "node_os_disk_size" {
 variable "availability_zones" {
   description = "Availability zones for node pools"
   type        = list(string)
-  default     = ["1", "2", "3"]
+  default     = ["1", "3"]
 
   validation {
     condition = alltrue([

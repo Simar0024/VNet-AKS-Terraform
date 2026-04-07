@@ -121,17 +121,6 @@ variable "enable_geo_redundant_backup" {
   default     = true
 }
 
-variable "high_availability_mode" {
-  description = "High availability mode (Disabled, ZoneRedundant)"
-  type        = string
-  default     = "Disabled"
-
-  validation {
-    condition     = contains(["Disabled", "ZoneRedundant"], var.high_availability_mode)
-    error_message = "High availability mode must be Disabled or ZoneRedundant."
-  }
-}
-
 variable "private_subnet_id" {
   description = "ID of the private subnet for database delegation"
   type        = string

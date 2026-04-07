@@ -95,7 +95,7 @@ variable "aks_cluster_name" {
 variable "kubernetes_version" {
   description = "Kubernetes version to use"
   type        = string
-  default     = "1.27"
+  default     = "1.30"
 }
 
 variable "aks_node_count" {
@@ -639,11 +639,6 @@ variable "enable_geo_redundant_backup" {
   default     = true
 }
 
-variable "high_availability_mode" {
-  description = "High availability mode"
-  type        = string
-  default     = "Disabled"
-}
 
 # ============================================================================
 # ADDITIONAL AKS CONFIGURATION
@@ -688,7 +683,7 @@ variable "node_os_disk_size" {
 variable "availability_zones" {
   description = "Availability zones"
   type        = list(string)
-  default     = ["1", "2", "3"]
+  default     = ["1", "3"]
 }
 
 variable "service_cidr" {
@@ -819,7 +814,7 @@ variable "autoscale_min_capacity" {
 variable "autoscale_max_capacity" {
   description = "Autoscale maximum capacity"
   type        = number
-  default     = 10
+  default     = 5
 }
 
 # ============================================================================

@@ -15,7 +15,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   version                      = var.database_version
   backup_retention_days        = var.backup_retention_days
   geo_redundant_backup_enabled = var.enable_geo_redundant_backup
-
+  zone                          = "1"
   delegated_subnet_id           = var.private_subnet_id
   private_dns_zone_id           = azurerm_private_dns_zone.db.id
   public_network_access_enabled = false
@@ -115,37 +115,6 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "azure_services" {
   end_ip_address   = "0.0.0.0"
 }
 
-# ============================================================================
-# PRIVATE ENDPOINT FOR DATABASE
-# ============================================================================
-
-resource "azurerm_private_endpoint" "database" {
-  name                = "pe-database"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.private_subnet_id
-
-  private_service_connection {
-    name                           = "psc-database"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_postgresql_flexible_server.main.id
-    subresource_names              = ["postgresqlServer"]
-  }
-
-  tags = var.tags
-}
-
-# ============================================================================
-# PRIVATE DNS A RECORD FOR DATABASE ENDPOINT
-# ============================================================================
-
-resource "azurerm_private_dns_a_record" "database" {
-  name                = azurerm_postgresql_flexible_server.main.name
-  zone_name           = azurerm_private_dns_zone.db.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 300
-  records             = [azurerm_private_endpoint.database.private_service_connection[0].private_ip_address]
-}
 
 # ============================================================================
 # DIAGNOSTIC SETTINGS FOR DATABASE

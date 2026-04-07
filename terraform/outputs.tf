@@ -144,11 +144,6 @@ output "database_connection_string" {
   value       = module.database.database_connection_string
 }
 
-output "database_host" {
-  description = "Database host via private endpoint"
-  value       = module.database.database_host
-}
-
 output "database_port" {
   description = "Database port"
   value       = module.database.database_port

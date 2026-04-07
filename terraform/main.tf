@@ -132,7 +132,6 @@ module "database" {
 
   backup_retention_days       = var.backup_retention_days
   enable_geo_redundant_backup = var.enable_geo_redundant_backup
-  high_availability_mode      = var.high_availability_mode
 
   private_subnet_id  = module.networking.private_subnet_id
   virtual_network_id = module.networking.vnet_id

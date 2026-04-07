@@ -63,9 +63,9 @@ resource "azurerm_key_vault" "main" {
   tags = var.tags
 }
 
-resource "azurerm_role_assignment" "terraform_vault_admin" {
+resource "azurerm_role_assignment" "tf_keyvault_access" {
   scope                = azurerm_key_vault.main.id
-  role_definition_name = "Key Vault Crypto Officer"
+  role_definition_name = "Key Vault Administrator" # or Crypto Officer
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
@@ -90,7 +90,7 @@ resource "azurerm_key_vault_key" "storage" {
 
   depends_on = [
     azurerm_key_vault.main,
-    azurerm_role_assignment.terraform_vault_admin
+    azurerm_role_assignment.tf_keyvault_access
   ]
 }
 
@@ -111,7 +111,7 @@ resource "azurerm_key_vault_key" "disk_encryption" {
 
   depends_on = [
     azurerm_key_vault.main,
-    azurerm_role_assignment.terraform_vault_admin
+    azurerm_role_assignment.tf_keyvault_access
   ]
 }
 
