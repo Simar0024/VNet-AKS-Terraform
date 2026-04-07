@@ -205,7 +205,7 @@ variable "action_group_id" {
 variable "aad_admin_groups" {
   description = "Azure AD group object IDs for cluster admin access"
   type        = list(string)
-  default     = []
+  default     = ["c290c9ee-ffb3-4c5f-aa46-2314146a9fdb"]
 }
 
 variable "authorized_ip_ranges" {

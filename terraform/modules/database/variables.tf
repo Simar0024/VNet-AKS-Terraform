@@ -124,7 +124,7 @@ variable "enable_geo_redundant_backup" {
 variable "high_availability_mode" {
   description = "High availability mode (Disabled, ZoneRedundant)"
   type        = string
-  default     = "ZoneRedundant"
+  default     = "Disabled"
 
   validation {
     condition     = contains(["Disabled", "ZoneRedundant"], var.high_availability_mode)

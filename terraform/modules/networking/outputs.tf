@@ -74,3 +74,8 @@ output "database_subnet_id" {
   description = "The ID of the delegated Database subnet"
   value       = azurerm_subnet.database.id
 }
+
+output "lb_subnet_id" {
+  description = "The ID of the non-delegated subnet for the Load Balancer"
+  value       = azurerm_subnet.lb_subnet.id
+}

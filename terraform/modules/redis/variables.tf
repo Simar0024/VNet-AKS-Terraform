@@ -83,6 +83,16 @@ variable "private_subnet_id" {
   }
 }
 
+variable "management_subnet_id" {
+  description = "The ID of the subnet for the Private VM"
+  type        = string
+
+  validation {
+    condition     = can(regex("^/subscriptions/", var.management_subnet_id))
+    error_message = "Subnet ID must be a valid Azure resource ID."
+  }
+}
+
 variable "virtual_network_id" {
   description = "ID of the virtual network for private DNS zone link"
   type        = string

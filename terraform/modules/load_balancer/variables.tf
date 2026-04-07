@@ -50,6 +50,11 @@ variable "private_subnet_id" {
   }
 }
 
+variable "lb_subnet_id" {
+  type        = string
+  description = "The Subnet ID where the Internal Load Balancer will reside"
+}
+
 variable "load_balancer_private_ip" {
   description = "Private IP address for the load balancer frontend"
   type        = string

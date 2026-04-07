@@ -162,6 +162,7 @@ resource "azurerm_role_assignment" "disk_encryption_key_vault" {
   principal_id         = azurerm_disk_encryption_set.main.identity[0].principal_id
 }
 
+
 # ============================================================================
 # DATA SOURCES
 # ============================================================================

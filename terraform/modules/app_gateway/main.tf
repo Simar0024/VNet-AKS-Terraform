@@ -73,10 +73,15 @@ resource "azurerm_application_gateway" "main" {
   resource_group_name = var.resource_group_name
 
   sku {
-    name     = var.app_gateway_sku_name
-    tier     = var.app_gateway_sku_tier
-    capacity = var.app_gateway_capacity
+    name     = "WAF_v2"
+    tier     = "WAF_v2"
+    capacity = 2
   }
+   # Autoscaling
+  autoscale_configuration {
+     min_capacity = 1
+     max_capacity = 5
+   }
 
   gateway_ip_configuration {
     name      = "appgw-ipconfig"
@@ -183,11 +188,7 @@ resource "azurerm_application_gateway" "main" {
     max_request_body_size_kb = 128
   }
 
-  # Autoscaling
-  autoscale_configuration {
-    min_capacity = var.autoscale_min_capacity
-    max_capacity = var.autoscale_max_capacity
-  }
+ 
 
   tags = var.tags
 

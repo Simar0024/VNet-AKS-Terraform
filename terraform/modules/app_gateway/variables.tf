@@ -132,7 +132,7 @@ variable "autoscale_min_capacity" {
 variable "autoscale_max_capacity" {
   description = "Maximum capacity for autoscaling"
   type        = number
-  default     = 10
+  default     = 5
 
   validation {
     condition     = var.autoscale_max_capacity >= var.autoscale_min_capacity && var.autoscale_max_capacity <= 125

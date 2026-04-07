@@ -65,13 +65,12 @@ module "monitoring" {
   log_retention_days   = var.log_retention_days
   alert_email          = var.alert_email
   enable_metric_alerts = var.enable_metric_alerts
-  alert_scopes         = ["/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/virtualMachines/mgmt-vm"]
+  alert_scopes         = ["/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/virtualMachines/vm-bastion"]
 
   tags = local.common_tags
 
   depends_on = [
-    azurerm_resource_group.main,
-    module.bastion
+    azurerm_resource_group.main
   ]
 }
 
@@ -167,7 +166,8 @@ module "redis" {
 
   private_subnet_id  = module.networking.private_subnet_id
   virtual_network_id = module.networking.vnet_id
-
+  management_subnet_id = module.networking.management_subnet_id
+  
   enable_diagnostics         = var.enable_diagnostics
   log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
 
@@ -309,7 +309,8 @@ module "bastion" {
 
   depends_on = [
     module.security,
-    module.networking
+    module.networking,
+    module.monitoring
   ]
 }
 
@@ -327,6 +328,7 @@ module "load_balancer" {
   load_balancer_name       = var.load_balancer_name
   private_subnet_id        = module.networking.private_subnet_id
   load_balancer_private_ip = var.load_balancer_private_ip
+  lb_subnet_id             = module.networking.lb_subnet_id
 
   health_probe_protocol = var.health_probe_protocol
   health_probe_port     = var.health_probe_port

@@ -46,12 +46,9 @@ resource "azurerm_subnet" "private" {
   service_endpoints                 = ["Microsoft.KeyVault", "Microsoft.Storage", "Microsoft.Sql"]
   delegation {
     name = "AzureDatabases"
-
     service_delegation {
-      name = "Microsoft.DBforMySQL/flexibleServers"
-      actions = [
-        "Microsoft.Network/virtualNetworks/subnets/join/action",
-      ]
+      name    = "Microsoft.DBforPostgreSQL/flexibleServers"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
 }
@@ -84,6 +81,14 @@ resource "azurerm_subnet" "database" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
+}
+
+resource "azurerm_subnet" "lb_subnet" {
+  name                 = "snet-lb-dev"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.40.0/24"]
+  # DO NOT ADD A DELEGATION BLOCK HERE
 }
 # ============================================================================
 # PUBLIC NETWORK SECURITY GROUP

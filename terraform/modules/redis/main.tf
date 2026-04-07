@@ -35,7 +35,7 @@ resource "azurerm_private_endpoint" "redis" {
   name                = "pe-redis"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = var.private_subnet_id
+  subnet_id           = var.management_subnet_id
 
   private_service_connection {
     name                           = "psc-redis"

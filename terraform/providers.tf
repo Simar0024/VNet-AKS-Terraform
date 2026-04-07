@@ -27,6 +27,7 @@ terraform {
 provider "azurerm" {
   features {}
   subscription_id = var.azure_subscription_id
+  storage_use_azuread = true
 }
 
 # Configure Kubernetes provider with local kubeconfig context

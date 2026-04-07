@@ -20,10 +20,6 @@ resource "azurerm_postgresql_flexible_server" "main" {
   private_dns_zone_id           = azurerm_private_dns_zone.db.id
   public_network_access_enabled = false
 
-  high_availability {
-    mode = var.high_availability_mode
-  }
-
   maintenance_window {
     day_of_week  = 0
     start_hour   = 2
@@ -93,7 +89,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "log_statement" {
 # ============================================================================
 
 resource "azurerm_private_dns_zone" "db" {
-  name                = "postgres.database.azure.com"
+  name                = "app-dev.postgres.database.azure.com"
   resource_group_name = var.resource_group_name
 }
 

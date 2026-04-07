@@ -85,103 +85,57 @@ resource "azurerm_monitor_action_group" "main" {
 # ============================================================================
 # Email receivers are now configured directly in the action group above
 
-# ============================================================================
-# METRIC ALERT - HIGH CPU USAGE
-# ============================================================================
 
+# 1. High CPU Alert (Platform Metric: Percentage CPU)
 resource "azurerm_monitor_metric_alert" "high_cpu" {
-  for_each = var.enable_metric_alerts ? { "high_cpu" = true } : {}
-
   name                = "alert-high-cpu-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes
-
-  description = "Alert when average CPU usage is high"
-  severity    = 2
-  enabled     = true
+  severity            = 2
+  frequency           = "PT1M"
+  window_size         = "PT5M"
 
   criteria {
-    metric_name      = "Percentage CPU"
     metric_namespace = "Microsoft.Compute/virtualMachines"
+    metric_name      = "Percentage CPU"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 85
   }
-
-  frequency   = "PT1M"
-  window_size = "PT5M"
-
-  action {
-    action_group_id = azurerm_monitor_action_group.main.id
-  }
-
-  tags = var.tags
 }
 
-# ============================================================================
-# METRIC ALERT - LOW DISK SPACE
-# ============================================================================
-
-resource "azurerm_monitor_metric_alert" "low_disk" {
-  for_each = var.enable_metric_alerts ? { "low_disk" = true } : {}
-
-  name                = "alert-low-disk-${var.environment}"
+# 2. Disk Health Alert (Platform Metric: Disk Read/Write Operations)
+# Note: "Free Disk Space %" is NOT a platform metric. 
+# We use 'Disk Read Operations/Sec' to monitor activity as a proxy.
+resource "azurerm_monitor_metric_alert" "disk_activity" {
+  name                = "alert-disk-activity-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes
-
-  description = "Alert when free disk space is low"
-  severity    = 2
-  enabled     = true
+  severity            = 3
 
   criteria {
-    metric_name      = "Free Disk Space %"
     metric_namespace = "Microsoft.Compute/virtualMachines"
+    metric_name      = "Disk Read Operations/Sec" 
     aggregation      = "Average"
-    operator         = "LessThan"
-    threshold        = 20
+    operator         = "GreaterThan"
+    threshold        = 1000
   }
-
-  frequency   = "PT5M"
-  window_size = "PT5M"
-
-  action {
-    action_group_id = azurerm_monitor_action_group.main.id
-  }
-
-  tags = var.tags
 }
 
-# ============================================================================
-# METRIC ALERT - MEMORY PRESSURE
-# ============================================================================
-
-resource "azurerm_monitor_metric_alert" "memory_pressure" {
-  for_each = var.enable_metric_alerts ? { "memory_pressure" = true } : {}
-
-  name                = "alert-memory-pressure-${var.environment}"
+# 3. Network In/Out Alert (Platform Metric: Network In Total)
+resource "azurerm_monitor_metric_alert" "network_spike" {
+  name                = "alert-network-in-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes
-
-  description = "Alert when memory usage is high"
-  severity    = 2
-  enabled     = true
+  severity            = 3
 
   criteria {
-    metric_name      = "Available Memory Bytes"
     metric_namespace = "Microsoft.Compute/virtualMachines"
-    aggregation      = "Average"
-    operator         = "LessThan"
-    threshold        = 536870912 # 512 MB
+    metric_name      = "Network In Total"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 100000000 # 100MB
   }
-
-  frequency   = "PT1M"
-  window_size = "PT5M"
-
-  action {
-    action_group_id = azurerm_monitor_action_group.main.id
-  }
-
-  tags = var.tags
 }
 
 # ============================================================================

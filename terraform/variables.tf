@@ -373,7 +373,7 @@ variable "bastion_vm_name" {
 variable "bastion_vm_size" {
   description = "VM size for Bastion host"
   type        = string
-  default     = "Standard_B2s"
+  default     = "Standard_D2s_v3"
 }
 
 variable "bastion_os_type" {
@@ -642,7 +642,7 @@ variable "enable_geo_redundant_backup" {
 variable "high_availability_mode" {
   description = "High availability mode"
   type        = string
-  default     = "ZoneRedundant"
+  default     = "Disabled"
 }
 
 # ============================================================================

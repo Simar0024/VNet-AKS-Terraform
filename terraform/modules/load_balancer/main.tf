@@ -13,9 +13,8 @@ resource "azurerm_lb" "main" {
 
   frontend_ip_configuration {
     name                          = "ilb-frontend-ip"
-    subnet_id                     = var.private_subnet_id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = var.load_balancer_private_ip
+    subnet_id                     = var.lb_subnet_id # Use the non-delegated ID
+    private_ip_address_allocation = "Dynamic"
   }
 
   tags = var.tags
@@ -39,7 +38,6 @@ resource "azurerm_lb_probe" "main" {
   loadbalancer_id     = azurerm_lb.main.id
   protocol            = var.health_probe_protocol
   port                = var.health_probe_port
-  request_path        = var.health_probe_path
   interval_in_seconds = 15
   number_of_probes    = 2
 }
