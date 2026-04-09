@@ -73,14 +73,14 @@ resource "azurerm_application_gateway" "main" {
   resource_group_name = var.resource_group_name
 
   sku {
-    name     = "WAF_v2"
-    tier     = "WAF_v2"
+    name = var.app_gateway_sku_name
+    tier = var.app_gateway_sku_tier
   }
-   # Autoscaling
+
   autoscale_configuration {
-     min_capacity = 1
-     max_capacity = 5
-   }
+    min_capacity = var.autoscale_min_capacity
+    max_capacity = var.autoscale_max_capacity
+  }
 
   gateway_ip_configuration {
     name      = "appgw-ipconfig"
@@ -141,6 +141,7 @@ resource "azurerm_application_gateway" "main" {
     http_listener_name         = "appgw-http-listener"
     backend_address_pool_name  = "appgw-be-pool"
     backend_http_settings_name = "appgw-be-http-settings"
+    priority                   = 100
   }
 
   # HTTPS Request Routing Rule
@@ -150,6 +151,7 @@ resource "azurerm_application_gateway" "main" {
     http_listener_name         = "appgw-https-listener"
     backend_address_pool_name  = "appgw-be-pool"
     backend_http_settings_name = "appgw-be-https-settings"
+    priority                   = 200
   }
 
   # HTTP Listener

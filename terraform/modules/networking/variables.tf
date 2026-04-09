@@ -35,6 +35,30 @@ variable "private_subnet_cidr" {
   type        = string
 }
 
+variable "aks_subnet_cidr" {
+  description = "CIDR block for AKS subnet"
+  type        = string
+  default     = "10.0.50.0/24"
+}
+
+variable "database_subnet_cidr" {
+  description = "CIDR block for database subnet"
+  type        = string
+  default     = "10.0.30.0/24"
+}
+
+variable "bastion_subnet_cidr" {
+  description = "CIDR block for Azure Bastion subnet"
+  type        = string
+  default     = "10.0.10.0/26"
+}
+
+variable "management_subnet_cidr" {
+  description = "CIDR block for management subnet"
+  type        = string
+  default     = "10.0.20.0/24"
+}
+
 variable "enable_nat_gateway" {
   description = "Enable NAT Gateway for outbound traffic"
   type        = bool

@@ -19,7 +19,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     os_disk_size_gb     = var.node_os_disk_size
     max_pods            = 110
     zones               = var.availability_zones
-    enable_auto_scaling = true
+    
     min_count           = var.node_pool_min_count
     max_count           = var.node_pool_max_count
     kubelet_disk_type   = "OS"
@@ -52,7 +52,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   role_based_access_control_enabled = true
 
   azure_active_directory_role_based_access_control {
-    managed                = true
+  
     azure_rbac_enabled     = true
     admin_group_object_ids = var.aad_admin_groups
   }
@@ -82,7 +82,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "system" {
   vnet_subnet_id        = var.private_subnet_id
   os_disk_size_gb       = var.node_os_disk_size
   zones                 = var.availability_zones
-  enable_auto_scaling   = true
+  
   min_count             = var.system_node_pool_min_count
   max_count             = var.system_node_pool_max_count
   node_taints           = ["CriticalAddonsOnly=true:NoSchedule"]
@@ -100,7 +100,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "compute" {
   vnet_subnet_id        = var.private_subnet_id
   os_disk_size_gb       = var.node_os_disk_size
   zones                 = var.availability_zones
-  enable_auto_scaling   = true
+
   min_count             = var.compute_node_pool_min_count
   max_count             = var.compute_node_pool_max_count
 

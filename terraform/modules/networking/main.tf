@@ -43,28 +43,21 @@ resource "azurerm_subnet" "private" {
   address_prefixes     = [var.private_subnet_cidr]
 
   private_endpoint_network_policies = "Disabled"
-  service_endpoints                 = ["Microsoft.KeyVault", "Microsoft.Storage", "Microsoft.Sql"]
-  delegation {
-    name = "AzureDatabases"
-    service_delegation {
-      name    = "Microsoft.DBforPostgreSQL/flexibleServers"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-    }
-  }
+  service_endpoints                 = ["Microsoft.KeyVault", "Microsoft.Storage"]
 }
 
 resource "azurerm_subnet" "bastion_service" {
   name                 = "AzureBastionSubnet" # MUST be exactly this
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.10.0/26"] # Use a small range like /26
+  address_prefixes     = [var.bastion_subnet_cidr]
 }
 
 resource "azurerm_subnet" "management" {
   name                 = "snet-mgmt-dev"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.20.0/24"]
+  address_prefixes     = [var.management_subnet_cidr]
   # No delegation here! This allows NICs and VMs to exist.
 }
 
@@ -72,23 +65,24 @@ resource "azurerm_subnet" "database" {
   name                 = "snet-db-dev"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.30.0/24"]
+  address_prefixes     = [var.database_subnet_cidr]
 
   delegation {
     name = "fs-delegation"
     service_delegation {
-      name    = "Microsoft.DBforMySQL/flexibleServers"
+      name    = "Microsoft.DBforPostgreSQL/flexibleServers"
       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
 }
 
-resource "azurerm_subnet" "lb_subnet" {
-  name                 = "snet-lb-dev"
+resource "azurerm_subnet" "aks" {
+  name                 = "snet-aks-dev"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.40.0/24"]
-  # DO NOT ADD A DELEGATION BLOCK HERE
+  address_prefixes     = [var.aks_subnet_cidr]
+
+  service_endpoints = ["Microsoft.KeyVault", "Microsoft.Storage"]
 }
 # ============================================================================
 # PUBLIC NETWORK SECURITY GROUP
@@ -156,6 +150,21 @@ resource "azurerm_network_security_rule" "public_ssh" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.public.name
+}
+
+# App Gateway v2 Health Probe Ports (Required)
+resource "azurerm_network_security_rule" "public_app_gateway_v2_health" {
+  name                        = "allow-app-gateway-v2-health"
+  priority                    = 104
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "65200-65535"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
@@ -319,10 +328,11 @@ resource "azurerm_subnet_route_table_association" "private" {
 }
 
 # ============================================================================
-# NETWORK WATCHER
+# NETWORK WATCHER (Optional - may already exist in region)
 # ============================================================================
 
 resource "azurerm_network_watcher" "main" {
+  count               = 0  # Network watcher limit: 1 per region per subscription. Disable if already exists.
   name                = "nw-${var.project_name}-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name

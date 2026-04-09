@@ -70,6 +70,30 @@ variable "private_subnet_cidr" {
   default     = "10.0.2.0/24"
 }
 
+variable "aks_subnet_cidr" {
+  description = "CIDR block for AKS subnet"
+  type        = string
+  default     = "10.0.50.0/24"
+}
+
+variable "database_subnet_cidr" {
+  description = "CIDR block for database subnet"
+  type        = string
+  default     = "10.0.30.0/24"
+}
+
+variable "bastion_subnet_cidr" {
+  description = "CIDR block for Azure Bastion subnet"
+  type        = string
+  default     = "10.0.10.0/26"
+}
+
+variable "management_subnet_cidr" {
+  description = "CIDR block for management subnet"
+  type        = string
+  default     = "10.0.20.0/24"
+}
+
 variable "enable_nat_gateway" {
   description = "Enable NAT Gateway for outbound traffic"
   type        = bool
@@ -231,63 +255,6 @@ variable "app_gateway_sku_name" {
 }
 
 # ============================================================================
-# DATABASE CONFIGURATION
-# ============================================================================
-
-variable "sql_server_name" {
-  description = "Name of SQL Flexible Server"
-  type        = string
-  default     = "psql-app-server"
-}
-
-variable "sql_version" {
-  description = "SQL Server version (12 for MySQL, 13-14 for PostgreSQL)"
-  type        = string
-  default     = "16"
-}
-
-variable "sql_admin_username" {
-  description = "Administrator username for SQL Database"
-  type        = string
-  sensitive   = true
-}
-
-variable "sql_admin_password" {
-  description = "Administrator password for SQL Database"
-  type        = string
-  sensitive   = true
-}
-
-variable "sql_database_name" {
-  description = "Name of the database"
-  type        = string
-  default     = "appdb"
-}
-
-variable "sql_sku" {
-  description = "SKU for SQL Flexible Server (e.g., B_Standard_B2s, D_Standard_D2s_v3)"
-  type        = string
-  default     = "B_Standard_B2s"
-}
-
-variable "sql_storage_mb" {
-  description = "Storage size in MB for SQL Database"
-  type        = number
-  default     = 32768
-}
-
-variable "sql_backup_retention_days" {
-  description = "Backup retention period in days"
-  type        = number
-  default     = 7
-
-  validation {
-    condition     = var.sql_backup_retention_days >= 7 && var.sql_backup_retention_days <= 35
-    error_message = "Backup retention must be between 7 and 35 days."
-  }
-}
-
-# ============================================================================
 # STORAGE ACCOUNT CONFIGURATION
 # ============================================================================
 
@@ -445,29 +412,13 @@ variable "bastion_sku" {
 }
 
 # ============================================================================
-# INTERNAL LOAD BALANCER CONFIGURATION
-# ============================================================================
-
-variable "internal_lb_name" {
-  description = "Name of Internal Load Balancer"
-  type        = string
-  default     = "ilb-app-gateway"
-}
-
-variable "internal_lb_sku" {
-  description = "Internal LB SKU (Basic or Standard)"
-  type        = string
-  default     = "Standard"
-}
-
-# ============================================================================
 # PRIVATE ENDPOINTS CONFIGURATION
 # ============================================================================
 
 variable "private_dns_zone_name_sql" {
-  description = "Private DNS Zone name for SQL Database"
+  description = "Private DNS Zone name for PostgreSQL Database"
   type        = string
-  default     = "privatelink.mysql.database.azure.com"
+  default     = "privatelink.postgres.database.azure.com"
 }
 
 variable "private_dns_zone_name_storage" {
@@ -838,40 +789,6 @@ variable "enable_vm_encryption" {
   description = "Enable VM disk encryption"
   type        = bool
   default     = true
-}
-
-# ============================================================================
-# LOAD BALANCER CONFIGURATION
-# ============================================================================
-
-variable "load_balancer_name" {
-  description = "Load balancer name"
-  type        = string
-  default     = "ilb-webappaks"
-}
-
-variable "load_balancer_private_ip" {
-  description = "Load balancer private IP"
-  type        = string
-  default     = "10.2.1.10"
-}
-
-variable "health_probe_protocol" {
-  description = "Health probe protocol"
-  type        = string
-  default     = "Tcp"
-}
-
-variable "health_probe_port" {
-  description = "Health probe port"
-  type        = number
-  default     = 80
-}
-
-variable "health_probe_path" {
-  description = "Health probe path"
-  type        = string
-  default     = "/"
 }
 
 variable "create_bastion_vm" {

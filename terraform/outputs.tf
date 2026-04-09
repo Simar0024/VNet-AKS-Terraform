@@ -293,52 +293,22 @@ output "bastion_vm_private_ip" {
 }
 
 # ============================================================================
-# INTERNAL LOAD BALANCER OUTPUTS
-# ============================================================================
-
-output "load_balancer_id" {
-  description = "ID of the internal load balancer"
-  value       = module.load_balancer.load_balancer_id
-}
-
-output "load_balancer_name" {
-  description = "Name of the internal load balancer"
-  value       = module.load_balancer.load_balancer_name
-}
-
-output "load_balancer_private_ip" {
-  description = "Private IP of the internal load balancer"
-  value       = module.load_balancer.load_balancer_private_ip
-}
-
-output "backend_address_pool_id" {
-  description = "ID of the backend address pool"
-  value       = module.load_balancer.backend_address_pool_id
-}
-
-output "health_probe_id" {
-  description = "ID of the health probe"
-  value       = module.load_balancer.health_probe_id
-}
-
-# ============================================================================
 # DEPLOYMENT SUMMARY
 # ============================================================================
 
 output "deployment_summary" {
   description = "Summary of deployed resources"
   value = {
-    project_name             = var.project_name
-    environment              = var.environment
-    location                 = azurerm_resource_group.main.location
-    vnet_cidr                = var.vnet_cidr
-    aks_cluster_name         = module.aks.aks_cluster_name
-    app_gateway_public_ip    = module.app_gateway.app_gateway_public_ip
-    bastion_public_ip        = module.bastion.bastion_public_ip
-    load_balancer_private_ip = module.load_balancer.load_balancer_private_ip
-    database_server_fqdn     = module.database.database_server_fqdn
-    redis_hostname           = module.redis.redis_hostname
-    storage_account_name     = module.storage.storage_account_name
+    project_name          = var.project_name
+    environment           = var.environment
+    location              = azurerm_resource_group.main.location
+    vnet_cidr             = var.vnet_cidr
+    aks_cluster_name      = module.aks.aks_cluster_name
+    app_gateway_public_ip = module.app_gateway.app_gateway_public_ip
+    bastion_public_ip     = module.bastion.bastion_public_ip
+    database_server_fqdn  = module.database.database_server_fqdn
+    redis_hostname        = module.redis.redis_hostname
+    storage_account_name  = module.storage.storage_account_name
   }
 }
 

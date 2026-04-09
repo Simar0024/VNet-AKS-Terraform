@@ -50,16 +50,6 @@ output "route_table_id" {
   value       = azurerm_route_table.private.id
 }
 
-output "network_watcher_id" {
-  description = "ID of the Network Watcher"
-  value       = azurerm_network_watcher.main.id
-}
-
-output "network_watcher_name" {
-  description = "Name of the Network Watcher"
-  value       = azurerm_network_watcher.main.name
-}
-
 output "bastion_subnet_id" {
   description = "The ID of the AzureBastionSubnet"
   value       = azurerm_subnet.bastion_service.id
@@ -75,7 +65,7 @@ output "database_subnet_id" {
   value       = azurerm_subnet.database.id
 }
 
-output "lb_subnet_id" {
-  description = "The ID of the non-delegated subnet for the Load Balancer"
-  value       = azurerm_subnet.lb_subnet.id
+output "aks_subnet_id" {
+  description = "The ID of the AKS subnet"
+  value       = azurerm_subnet.aks.id
 }

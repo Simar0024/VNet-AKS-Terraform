@@ -88,6 +88,7 @@ resource "azurerm_monitor_action_group" "main" {
 
 # 1. High CPU Alert (Platform Metric: Percentage CPU)
 resource "azurerm_monitor_metric_alert" "high_cpu" {
+  count               = var.enable_metric_alerts && length(var.alert_scopes) > 0 ? 1 : 0
   name                = "alert-high-cpu-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes
@@ -108,6 +109,7 @@ resource "azurerm_monitor_metric_alert" "high_cpu" {
 # Note: "Free Disk Space %" is NOT a platform metric. 
 # We use 'Disk Read Operations/Sec' to monitor activity as a proxy.
 resource "azurerm_monitor_metric_alert" "disk_activity" {
+  count               = var.enable_metric_alerts && length(var.alert_scopes) > 0 ? 1 : 0
   name                = "alert-disk-activity-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes
@@ -124,6 +126,7 @@ resource "azurerm_monitor_metric_alert" "disk_activity" {
 
 # 3. Network In/Out Alert (Platform Metric: Network In Total)
 resource "azurerm_monitor_metric_alert" "network_spike" {
+  count               = var.enable_metric_alerts && length(var.alert_scopes) > 0 ? 1 : 0
   name                = "alert-network-in-${var.environment}"
   resource_group_name = var.resource_group_name
   scopes              = var.alert_scopes

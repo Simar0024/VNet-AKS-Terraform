@@ -15,6 +15,10 @@ module "networking" {
   vnet_cidr                = var.vnet_cidr
   public_subnet_cidr       = var.public_subnet_cidr
   private_subnet_cidr      = var.private_subnet_cidr
+  aks_subnet_cidr          = var.aks_subnet_cidr
+  database_subnet_cidr     = var.database_subnet_cidr
+  bastion_subnet_cidr      = var.bastion_subnet_cidr
+  management_subnet_cidr   = var.management_subnet_cidr
   enable_nat_gateway       = var.enable_nat_gateway
   nat_gateway_idle_timeout = var.nat_gateway_idle_timeout
 
@@ -64,8 +68,8 @@ module "monitoring" {
   log_analytics_sku    = var.log_analytics_sku
   log_retention_days   = var.log_retention_days
   alert_email          = var.alert_email
-  enable_metric_alerts = var.enable_metric_alerts
-  alert_scopes         = ["/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Compute/virtualMachines/vm-bastion"]
+  enable_metric_alerts = false
+  alert_scopes         = []
 
   tags = local.common_tags
 
@@ -133,7 +137,7 @@ module "database" {
   backup_retention_days       = var.backup_retention_days
   enable_geo_redundant_backup = var.enable_geo_redundant_backup
 
-  private_subnet_id  = module.networking.private_subnet_id
+  private_subnet_id  = module.networking.database_subnet_id
   virtual_network_id = module.networking.vnet_id
 
   enable_diagnostics         = var.enable_diagnostics
@@ -200,7 +204,7 @@ module "aks" {
   node_os_disk_size         = var.node_os_disk_size
   availability_zones        = var.availability_zones
 
-  private_subnet_id  = module.networking.private_subnet_id
+  private_subnet_id  = module.networking.aks_subnet_id
   service_cidr       = var.service_cidr
   dns_service_ip     = var.dns_service_ip
   docker_bridge_cidr = var.docker_bridge_cidr
@@ -308,37 +312,6 @@ module "bastion" {
 
   depends_on = [
     module.security,
-    module.networking,
-    module.monitoring
-  ]
-}
-
-# ============================================================================
-# LOAD BALANCER MODULE
-# ============================================================================
-
-module "load_balancer" {
-  source = "./modules/load_balancer"
-
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-  environment         = var.environment
-
-  load_balancer_name       = var.load_balancer_name
-  private_subnet_id        = module.networking.private_subnet_id
-  load_balancer_private_ip = var.load_balancer_private_ip
-  lb_subnet_id             = module.networking.lb_subnet_id
-
-  health_probe_protocol = var.health_probe_protocol
-  health_probe_port     = var.health_probe_port
-  health_probe_path     = var.health_probe_path
-
-  enable_diagnostics         = var.enable_diagnostics
-  log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
-
-  tags = local.common_tags
-
-  depends_on = [
     module.networking,
     module.monitoring
   ]
