@@ -8,20 +8,23 @@ resource "azurerm_kubernetes_cluster" "main" {
   name                = var.aks_cluster_name
   location            = var.location
   resource_group_name = var.resource_group_name
+  private_cluster_enabled = true
   dns_prefix          = var.dns_prefix
-  kubernetes_version  = var.kubernetes_version
+  kubernetes_version  = "1.34.4"
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
 
   default_node_pool {
     name                = "default"
-    node_count          = var.node_pool_default_count
+    node_count          = var.aks_enable_auto_scaling ? null : var.node_pool_default_count
     vm_size             = var.node_pool_default_vm_size
     vnet_subnet_id      = var.private_subnet_id
     os_disk_size_gb     = var.node_os_disk_size
     max_pods            = 110
     zones               = var.availability_zones
-    
-    min_count           = var.node_pool_min_count
-    max_count           = var.node_pool_max_count
+    enable_auto_scaling = var.aks_enable_auto_scaling
+    min_count           = var.aks_enable_auto_scaling ? var.node_pool_min_count : null
+    max_count           = var.aks_enable_auto_scaling ? var.node_pool_max_count : null
     kubelet_disk_type   = "OS"
   }
 
@@ -33,8 +36,9 @@ resource "azurerm_kubernetes_cluster" "main" {
   network_profile {
     network_plugin    = "azure"
     network_policy    = "azure"
-    service_cidr      = var.service_cidr
-    dns_service_ip    = var.dns_service_ip
+    outbound_type  = "userAssignedNATGateway"
+    service_cidr      = "172.16.0.0/16"
+    dns_service_ip    = "172.16.0.10"
     load_balancer_sku = "standard"
   }
 
@@ -52,8 +56,8 @@ resource "azurerm_kubernetes_cluster" "main" {
   role_based_access_control_enabled = true
 
   azure_active_directory_role_based_access_control {
-  
-    azure_rbac_enabled     = true
+    managed            = true
+    azure_rbac_enabled = true
     admin_group_object_ids = var.aad_admin_groups
   }
 
@@ -72,24 +76,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 # ADDITIONAL AKS NODE POOLS
 # ============================================================================
 
-resource "azurerm_kubernetes_cluster_node_pool" "system" {
-  count = var.create_system_nodepool ? 1 : 0
-
-  name                  = "system"
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
-  node_count            = var.system_node_pool_count
-  vm_size               = var.system_node_pool_vm_size
-  vnet_subnet_id        = var.private_subnet_id
-  os_disk_size_gb       = var.node_os_disk_size
-  zones                 = var.availability_zones
-  
-  min_count             = var.system_node_pool_min_count
-  max_count             = var.system_node_pool_max_count
-  node_taints           = ["CriticalAddonsOnly=true:NoSchedule"]
-
-  tags = var.tags
-}
-
 resource "azurerm_kubernetes_cluster_node_pool" "compute" {
   count = var.create_compute_nodepool ? 1 : 0
 
@@ -100,7 +86,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "compute" {
   vnet_subnet_id        = var.private_subnet_id
   os_disk_size_gb       = var.node_os_disk_size
   zones                 = var.availability_zones
-
+  enable_auto_scaling = var.aks_enable_auto_scaling
   min_count             = var.compute_node_pool_min_count
   max_count             = var.compute_node_pool_max_count
 

@@ -171,6 +171,11 @@ resource "azurerm_application_gateway" "main" {
     ssl_certificate_name           = "appgw-ssl-cert"
   }
 
+  ssl_policy {
+      policy_type = "Predefined"
+      policy_name = "AppGwSslPolicy20220101" 
+    }
+
   # SSL Certificate
  ssl_certificate {
   name     = "appgw-ssl-cert"
@@ -188,8 +193,6 @@ resource "azurerm_application_gateway" "main" {
     file_upload_limit_mb     = 100
     max_request_body_size_kb = 128
   }
-
- 
 
   tags = var.tags
 

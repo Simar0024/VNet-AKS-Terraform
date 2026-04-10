@@ -201,6 +201,7 @@ module "aks" {
   node_pool_default_vm_size = var.node_pool_default_vm_size
   node_pool_min_count       = var.node_pool_min_count
   node_pool_max_count       = var.node_pool_max_count
+  aks_enable_auto_scaling   = var.aks_enable_auto_scaling
   node_os_disk_size         = var.node_os_disk_size
   availability_zones        = var.availability_zones
 
@@ -231,7 +232,7 @@ module "aks" {
   enable_diagnostics = var.enable_diagnostics
 
   tags = local.common_tags
-
+  
   depends_on = [
     module.security,
     module.networking,
@@ -239,6 +240,11 @@ module "aks" {
   ]
 }
 
+resource "azurerm_subnet_nat_gateway_association" "aks_nat" {
+  # These IDs should be outputs from your networking module
+  subnet_id      = module.networking.aks_subnet_id
+  nat_gateway_id = module.networking.nat_gateway_id
+}
 # ============================================================================
 # APPLICATION GATEWAY MODULE
 # ============================================================================
@@ -253,7 +259,6 @@ module "app_gateway" {
   app_gateway_name     = var.app_gateway_name
   app_gateway_sku_name = var.app_gateway_sku_name
   app_gateway_sku_tier = var.app_gateway_sku_tier
-  app_gateway_capacity = var.app_gateway_capacity
 
   app_gateway_subnet_id     = module.networking.public_subnet_id
   app_gateway_private_ip    = var.app_gateway_private_ip

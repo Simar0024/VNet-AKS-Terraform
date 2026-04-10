@@ -22,14 +22,6 @@ resource "azurerm_subnet" "public" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = [var.public_subnet_cidr]
-
-  delegation {
-    name = "Microsoft.Web.serverFarms"
-
-    service_delegation {
-      name = "Microsoft.Web/serverFarms"
-    }
-  }
 }
 
 # ============================================================================

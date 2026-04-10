@@ -2,22 +2,22 @@
 
 output "bastion_host_id" {
   description = "ID of the Azure Bastion Host"
-  value       = azurerm_bastion_host.main.id
+  value       = try(azurerm_bastion_host.main[0].id, null)
 }
 
 output "bastion_host_name" {
   description = "Name of the Azure Bastion Host"
-  value       = azurerm_bastion_host.main.name
+  value       = try(azurerm_bastion_host.main[0].name, null)
 }
 
 output "bastion_host_dns_name" {
   description = "DNS name of the Azure Bastion Host"
-  value       = azurerm_bastion_host.main.dns_name
+  value       = try(azurerm_bastion_host.main[0].dns_name, null)
 }
 
 output "bastion_public_ip" {
   description = "Public IP address of Bastion"
-  value       = azurerm_public_ip.bastion.ip_address
+  value       = try(azurerm_public_ip.bastion[0].ip_address, null)
 }
 
 output "bastion_nsg_id" {
@@ -42,10 +42,10 @@ output "bastion_vm_name" {
 
 output "bastion_vm_private_ip" {
   description = "Private IP of the bastion jump VM"
-  value       = azurerm_network_interface.bastion_vm.private_ip_address
+  value       = try(azurerm_network_interface.bastion_vm[0].private_ip_address, null)
 }
 
 output "bastion_vm_nic_id" {
   description = "ID of the bastion VM network interface"
-  value       = azurerm_network_interface.bastion_vm.id
+  value       = try(azurerm_network_interface.bastion_vm[0].id, null)
 }

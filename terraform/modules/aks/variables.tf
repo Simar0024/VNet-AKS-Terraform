@@ -75,7 +75,7 @@ variable "node_pool_default_count" {
 variable "node_pool_default_vm_size" {
   description = "Default node pool VM size"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_B2s"
 
   validation {
     condition     = can(regex("^Standard_", var.node_pool_default_vm_size))
@@ -103,6 +103,12 @@ variable "node_pool_max_count" {
     condition     = var.node_pool_max_count >= var.node_pool_min_count
     error_message = "Maximum node count must be >= minimum node count."
   }
+}
+
+variable "aks_enable_auto_scaling" {
+  description = "Enable autoscaling for AKS node pools"
+  type        = bool
+  default     = true
 }
 
 variable "node_os_disk_size" {
@@ -142,7 +148,7 @@ variable "private_subnet_id" {
 variable "service_cidr" {
   description = "CIDR range for Kubernetes services"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "172.16.0.0/16"
 
   validation {
     condition     = can(cidrhost(var.service_cidr, 1))
@@ -153,7 +159,7 @@ variable "service_cidr" {
 variable "dns_service_ip" {
   description = "IP for Kubernetes DNS service"
   type        = string
-  default     = "10.0.0.10"
+  default     = "172.16.0.10"
 
   validation {
     condition     = can(regex("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", var.dns_service_ip))
@@ -234,7 +240,7 @@ variable "system_node_pool_count" {
 variable "system_node_pool_vm_size" {
   description = "System node pool VM size"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_B2s"
 
   validation {
     condition     = can(regex("^Standard_", var.system_node_pool_vm_size))
@@ -274,7 +280,7 @@ variable "compute_node_pool_count" {
 variable "compute_node_pool_vm_size" {
   description = "Compute node pool VM size"
   type        = string
-  default     = "Standard_D4s_v3"
+  default     = "Standard_B2s"
 
   validation {
     condition     = can(regex("^Standard_", var.compute_node_pool_vm_size))

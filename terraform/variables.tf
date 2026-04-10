@@ -740,7 +740,7 @@ variable "app_gateway_sku_tier" {
 variable "app_gateway_private_ip" {
   description = "Application Gateway private IP"
   type        = string
-  default     = "10.1.1.10"
+  default     = "10.0.1.10"
 }
 
 variable "backend_pool_ip_addresses" {

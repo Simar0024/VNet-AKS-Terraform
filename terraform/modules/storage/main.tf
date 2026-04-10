@@ -46,18 +46,21 @@ resource "azurerm_storage_account" "main" {
 # ============================================================================
 
 resource "azurerm_storage_container" "app_data" {
+  count                 = 0  # Already exists, disabled due to authorization issues
   name                  = "app-data"
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "backup" {
+  count                 = 0  # Already exists, disabled due to authorization issues
   name                  = "backups"
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "logs" {
+  count                 = 0  # Already exists, disabled due to authorization issues
   name                  = "logs"
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = "private"
@@ -68,6 +71,7 @@ resource "azurerm_storage_container" "logs" {
 # ============================================================================
 
 resource "azurerm_storage_account_network_rules" "main" {
+  count              = 0  # Already exists, disabled due to authorization issues
   storage_account_id = azurerm_storage_account.main.id
 
   default_action             = "Deny"
@@ -80,6 +84,7 @@ resource "azurerm_storage_account_network_rules" "main" {
 # ============================================================================
 
 resource "azurerm_storage_queue" "main" {
+  count                = 0  # Already exists, disabled due to authorization issues
   name                 = "aks-queue"
   storage_account_name = azurerm_storage_account.main.name
 }
@@ -89,6 +94,7 @@ resource "azurerm_storage_queue" "main" {
 # ============================================================================
 
 resource "azurerm_storage_table" "diagnostics" {
+  count                = 0  # Already exists, disabled due to authorization issues
   name                 = "diagnostics"
   storage_account_name = azurerm_storage_account.main.name
 }

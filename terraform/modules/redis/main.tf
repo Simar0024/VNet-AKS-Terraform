@@ -106,7 +106,7 @@ resource "azurerm_redis_firewall_rule" "main" {
 # ============================================================================
 
 resource "azurerm_monitor_diagnostic_setting" "redis" {
-  count                      = var.enable_diagnostics ? 1 : 0
+  count                      = 0  # Already exists, disabled due to state conflicts
   name                       = "diag-redis-${var.environment}"
   target_resource_id         = azurerm_redis_cache.main.id
   log_analytics_workspace_id = var.log_analytics_workspace_id

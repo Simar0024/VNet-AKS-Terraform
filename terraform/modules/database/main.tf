@@ -121,7 +121,7 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "azure_services" {
 # ============================================================================
 
 resource "azurerm_monitor_diagnostic_setting" "database" {
-  count                      = var.enable_diagnostics ? 1 : 0
+  count                      = 0  # Already exists, disabled due to state conflicts
   name                       = "diag-db-${var.environment}"
   target_resource_id         = azurerm_postgresql_flexible_server.main.id
   log_analytics_workspace_id = var.log_analytics_workspace_id

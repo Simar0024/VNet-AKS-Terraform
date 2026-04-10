@@ -27,25 +27,25 @@ output "storage_account_primary_table_endpoint" {
 
 output "storage_container_app_data_id" {
   description = "ID of the app-data container"
-  value       = azurerm_storage_container.app_data.id
+  value       = try(azurerm_storage_container.app_data[0].id, null)
 }
 
 output "storage_container_backup_id" {
   description = "ID of the backups container"
-  value       = azurerm_storage_container.backup.id
+  value       = try(azurerm_storage_container.backup[0].id, null)
 }
 
 output "storage_container_logs_id" {
   description = "ID of the logs container"
-  value       = azurerm_storage_container.logs.id
+  value       = try(azurerm_storage_container.logs[0].id, null)
 }
 
 output "storage_queue_id" {
   description = "ID of the storage queue"
-  value       = azurerm_storage_queue.main.id
+  value       = try(azurerm_storage_queue.main[0].id, null)
 }
 
 output "storage_table_diagnostics_id" {
   description = "ID of the diagnostics table"
-  value       = azurerm_storage_table.diagnostics.id
+  value       = try(azurerm_storage_table.diagnostics[0].id, null)
 }

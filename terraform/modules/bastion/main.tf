@@ -5,6 +5,7 @@
 # ============================================================================
 
 resource "azurerm_public_ip" "bastion" {
+  count               = var.create_bastion_vm ? 1 : 0
   name                = "pip-bastion-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -20,6 +21,7 @@ resource "azurerm_public_ip" "bastion" {
 # ============================================================================
 
 resource "azurerm_bastion_host" "main" {
+  count               = var.create_bastion_vm ? 1 : 0
   name                = "bastion-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -30,7 +32,7 @@ resource "azurerm_bastion_host" "main" {
   ip_configuration {
     name                 = "bastion-ipconfig"
     subnet_id            = var.bastion_service_subnet_id
-    public_ip_address_id = azurerm_public_ip.bastion.id
+    public_ip_address_id = azurerm_public_ip.bastion[0].id
   }
 
   tags = var.tags
@@ -105,6 +107,7 @@ resource "azurerm_network_security_group" "bastion" {
 # ============================================================================
 
 resource "azurerm_network_interface" "bastion_vm" {
+  count               = var.create_bastion_vm ? 1 : 0
   name                = "nic-bastion-vm-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -127,13 +130,13 @@ resource "azurerm_linux_virtual_machine" "bastion_vm" {
   name                = var.bastion_vm_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  size                = var.bastion_vm_size
+  size                = "Standard_D2s_v3"
 
   admin_username                  = var.bastion_admin_user
   disable_password_authentication = true
 
   network_interface_ids = [
-    azurerm_network_interface.bastion_vm.id,
+    azurerm_network_interface.bastion_vm[0].id,
   ]
 
   os_disk {
@@ -170,9 +173,9 @@ resource "azurerm_linux_virtual_machine" "bastion_vm" {
 # ============================================================================
 
 resource "azurerm_monitor_diagnostic_setting" "bastion" {
-  count                      = var.enable_diagnostics ? 1 : 0
+  count                      = var.enable_diagnostics && var.create_bastion_vm ? 1 : 0
   name                       = "diag-bastion-${var.environment}"
-  target_resource_id         = azurerm_bastion_host.main.id
+  target_resource_id         = azurerm_bastion_host.main[0].id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   metric {

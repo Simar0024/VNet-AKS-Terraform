@@ -64,7 +64,7 @@ variable "bastion_vm_name" {
 variable "bastion_vm_size" {
   description = "Size of the bastion VM"
   type        = string
-  default     = "Standard_B2s"
+  default     = "Standard_D2s_v3"
 
   validation {
     condition     = can(regex("^Standard_", var.bastion_vm_size))
