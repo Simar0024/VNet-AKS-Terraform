@@ -76,23 +76,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 # ADDITIONAL AKS NODE POOLS
 # ============================================================================
 
-resource "azurerm_kubernetes_cluster_node_pool" "compute" {
-  count = var.create_compute_nodepool ? 1 : 0
-
-  name                  = "compute"
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
-  node_count            = var.compute_node_pool_count
-  vm_size               = var.compute_node_pool_vm_size
-  vnet_subnet_id        = var.private_subnet_id
-  os_disk_size_gb       = var.node_os_disk_size
-  zones                 = var.availability_zones
-  enable_auto_scaling = var.aks_enable_auto_scaling
-  min_count             = var.compute_node_pool_min_count
-  max_count             = var.compute_node_pool_max_count
-
-  tags = var.tags
-}
-
 # Auto-scaler configuration is set within the cluster configuration above
 # DIAGNOSTIC SETTINGS FOR AKS
 # ============================================================================
@@ -156,4 +139,13 @@ resource "azurerm_monitor_metric_alert" "aks_node_cpu" {
   }
 
   tags = var.tags
+}
+
+
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_role_assignment" "aks_admin" {
+  scope                = azurerm_kubernetes_cluster.main.id
+  role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
+  principal_id         = data.azurerm_client_config.current.object_id
 }

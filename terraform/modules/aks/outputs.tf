@@ -64,7 +64,3 @@ output "default_node_pool_id" {
   value       = azurerm_kubernetes_cluster.main.id
 }
 
-output "compute_node_pool_id" {
-  description = "ID of the compute node pool (if created)"
-  value       = try(azurerm_kubernetes_cluster_node_pool.compute[0].id, null)
-}

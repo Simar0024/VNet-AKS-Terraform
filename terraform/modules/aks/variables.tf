@@ -64,7 +64,7 @@ variable "kubernetes_version" {
 variable "node_pool_default_count" {
   description = "Default node pool initial node count"
   type        = number
-  default     = 3
+  default     = 2
 
   validation {
     condition     = var.node_pool_default_count >= 1 && var.node_pool_default_count <= 1000
@@ -269,7 +269,7 @@ variable "create_compute_nodepool" {
 variable "compute_node_pool_count" {
   description = "Compute node pool initial count"
   type        = number
-  default     = 2
+  default     = 1
 
   validation {
     condition     = var.compute_node_pool_count >= 0

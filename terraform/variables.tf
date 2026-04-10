@@ -125,7 +125,7 @@ variable "kubernetes_version" {
 variable "aks_node_count" {
   description = "Number of nodes in AKS default pool"
   type        = number
-  default     = 3
+  default     = 2
 
   validation {
     condition     = var.aks_node_count >= 1 && var.aks_node_count <= 100
@@ -369,7 +369,7 @@ variable "bastion_image_offer" {
 variable "bastion_image_sku" {
   description = "Image SKU for Bastion VM"
   type        = string
-  default     = "18.04-LTS"
+  default     = "22.04-LTS"
 }
 
 variable "bastion_image_version" {
