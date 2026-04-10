@@ -65,6 +65,10 @@ resource "azurerm_kubernetes_cluster" "main" {
     authorized_ip_ranges = var.authorized_ip_ranges
   }
 
+ ingress_application_gateway {
+  gateway_id = var.app_gateway_id # Use the variable, not the module path
+}
+
   depends_on = [
     var.aks_managed_identity_resource_id
   ]

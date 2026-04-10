@@ -196,6 +196,8 @@ module "aks" {
   aks_cluster_name   = var.aks_cluster_name
   dns_prefix         = var.dns_prefix
   kubernetes_version = var.kubernetes_version
+  
+  app_gateway_id = module.app_gateway.app_gateway_id
 
   node_pool_default_count   = var.node_pool_default_count
   node_pool_default_vm_size = var.node_pool_default_vm_size
